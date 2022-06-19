@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>Gesture Drawing Trainer</title>
+    <link rel="stylesheet", href="./CSS/style.css">
+  </head>
+  <body>
+    <div>To start, please select a folder containing the images you wish to work with.</div>
+    <button type="button" id="dirs">Select a folder </button>
+
+    <div id="showImageFolder"></div>
+    <div id="startButtonDiv"></div>
+    <!-- You can also require other files to run in this process -->
+    <script src="./dist/renderer.js">
+    </script>
+  </body>
+</html>
