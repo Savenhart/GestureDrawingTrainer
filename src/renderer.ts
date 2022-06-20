@@ -4,6 +4,8 @@
 // `nodeIntegration` is turned off. Use `preload.js` to
 // selectively enable features needed in the rendering
 // process.
+let showImageFolder = document.getElementById("showImageFolder");
+let startButtonDiv = document.getElementById("startButtonDiv");
 
 document.getElementById("dirs").addEventListener("click", () => {
   window.postMessage({
@@ -12,8 +14,7 @@ document.getElementById("dirs").addEventListener("click", () => {
 });
 
 window.api.receive("imagesToDisplay", (data: any) => {
-  let showImageFolder = document.getElementById("showImageFolder");
-  let startButtonDiv = document.getElementById("startButtonDiv");
+
   let startButton = document.createElement("button");
   let imgList = document.createElement("ul");
 
@@ -23,16 +24,18 @@ window.api.receive("imagesToDisplay", (data: any) => {
   startButton.textContent = "Start";
   startButton.setAttribute("id", "startButton");
   startButton.addEventListener("click", () => {
+
     let imgToSend = new Array();
     for (const check of isImgSeleted) {
         if (check.checked) { 
             imgToSend.push(document.getElementById("img" + check.id.slice(-1)).getAttribute("src"));
         }
+    }    
+    if(imgToSend.length > 0){
+        startImageScrolling(imgToSend, 5000);
+    }  else{
+        alert("You need to select at least one image.")
     }
-    window.postMessage({
-        type: "listImage",
-        imgToSend: imgToSend,
-    })
   });
   let x = 0;
 
@@ -70,3 +73,20 @@ window.api.receive("imagesToDisplay", (data: any) => {
     startButtonDiv.removeChild(startButtonDiv.lastChild);
   }
 });
+
+function startImageScrolling(imgList: string[], durationTimer: number) {
+    showImageFolder.innerHTML = "";
+    startButtonDiv.innerHTML = "";
+    let imagePlace = document.createElement('img');
+    let x = 0;
+    showImageFolder.appendChild(imagePlace);
+    imagePlace.setAttribute("src", imgList[x]);
+    let imgTimer = setInterval(() => {
+        x++;
+        imagePlace.setAttribute("src", imgList[x]);
+        if(x >= imgList.length - 1){
+            setTimeout(() => {showImageFolder.innerHTML = "";}, durationTimer)
+            clearInterval(imgTimer);
+        }
+    }, durationTimer)
+}

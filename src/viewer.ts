@@ -7,7 +7,7 @@ export class viewer {
         this.files = [];
         for (const path of paths) {
             for (const file of fs.readdirSync(path)) {
-                console.log(file);
+                //console.log(file);
                 this.files.push(path + "\\" + file);
             }
         }

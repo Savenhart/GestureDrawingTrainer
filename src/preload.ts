@@ -7,9 +7,6 @@ process.once('loaded', () => {
     if (evt.data.type === 'select-dirs') {
       ipcRenderer.send('select-dirs')
     }
-    if (evt.data.type === 'listImage') {
-      ipcRenderer.send('listImage', evt.data.imgToSend)
-    }
   })
 })
 
