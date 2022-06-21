@@ -6,6 +6,8 @@
 // process.
 let showImageFolder = document.getElementById("showImageFolder");
 let startButtonDiv = document.getElementById("startButtonDiv");
+let timeSelectionDiv = document.getElementById("timeSelectionDiv");
+let timeSeletionElement = document.getElementsByName("timeSelected") as NodeListOf<HTMLInputElement>;
 
 document.getElementById("dirs").addEventListener("click", () => {
   window.postMessage({
@@ -17,8 +19,26 @@ window.api.receive("imagesToDisplay", (data: any) => {
 
   let startButton = document.createElement("button");
   let imgList = document.createElement("ul");
-
+  //let selectTimer = document.createElement("select");
+  let timePossible = [30000, 60000, 120000, 300000]
+  let timerSelected : string;
   let isImgSeleted = new Array(); 
+
+  for (const [key, time] of timePossible.entries()) { 
+    let timeOption = document.createElement("input");
+    let timeLabel = document.createElement("label");
+    timeOption.setAttribute("type", "radio");
+    timeOption.setAttribute("id", "time:" + time);
+    timeOption.setAttribute("name", "timeSelected");
+    timeOption.setAttribute("value", time.toString());
+    if (key === 0){
+        timeOption.checked = true;
+    } 
+    timeLabel.setAttribute("for", "time:" + time);
+    timeLabel.textContent = (time/1000).toString();
+    timeSelectionDiv.appendChild(timeOption);
+    timeSelectionDiv.appendChild(timeLabel);
+  }
 
   startButton.setAttribute("type", "button");
   startButton.textContent = "Start";
@@ -26,17 +46,24 @@ window.api.receive("imagesToDisplay", (data: any) => {
   startButton.addEventListener("click", () => {
 
     let imgToSend = new Array();
+    for (const time of timeSeletionElement) {
+        if (time.checked) {
+            timerSelected = time.value;
+            console.log(timerSelected);
+        }
+    }
     for (const check of isImgSeleted) {
         if (check.checked) { 
             imgToSend.push(document.getElementById("img" + check.id.slice(-1)).getAttribute("src"));
         }
     }    
     if(imgToSend.length > 0){
-        startImageScrolling(imgToSend, 5000);
+        startImageScrolling(imgToSend, parseInt(timerSelected));
     }  else{
         alert("You need to select at least one image.")
     }
   });
+
   let x = 0;
 
   for (const img of data) {
