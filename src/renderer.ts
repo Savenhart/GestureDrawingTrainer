@@ -4,10 +4,12 @@
 // `nodeIntegration` is turned off. Use `preload.js` to
 // selectively enable features needed in the rendering
 // process.
-let showImageFolder = document.getElementById("showImageFolder");
-let startButtonDiv = document.getElementById("startButtonDiv");
-let timeSelectionDiv = document.getElementById("timeSelectionDiv");
-let timeSeletionElement = document.getElementsByName(
+const selectFolderDiv = document.getElementById("selectFolderDiv");
+const showImageFolder = document.getElementById("showImageFolder");
+const startButtonDiv = document.getElementById("startButtonDiv");
+const timeSelectionDiv = document.getElementById("timeSelectionDiv");
+const showCurrentImage = document.getElementById("showCurrentImage");
+const timeSeletionElement = document.getElementsByName(
   "timeSelected"
 ) as NodeListOf<HTMLInputElement>;
 
@@ -18,14 +20,20 @@ document.getElementById("dirs").addEventListener("click", () => {
 });
 
 window.api.receive("imagesToDisplay", (data: any) => {
+  if (!data) {
+    return;
+  }
   let startButton = document.createElement("button");
   let imgList = document.createElement("ul");
   //let selectTimer = document.createElement("select");
-  let timePossible = [30000, 60000, 120000, 300000];
+  const timePossible = [30000, 60000, 120000, 300000];
   let timerSelected: string;
   let isImgSeleted = new Array();
 
   for (const [key, time] of timePossible.entries()) {
+    if (document.getElementById("time:" + time)) {
+      break;
+    }
     let timeOption = document.createElement("input");
     let timeLabel = document.createElement("label");
     timeOption.setAttribute("type", "radio");
@@ -105,31 +113,37 @@ window.api.receive("imagesToDisplay", (data: any) => {
   }
 });
 
+
 function startImageScrolling(imgList: string[], durationTimer: number) {
-  document.getElementById("selectFolderDiv").style.display = "none";
-  showImageFolder.innerHTML = "";
-  startButtonDiv.innerHTML = "";
+  selectFolderDiv.style.display = "none";
+  timeSelectionDiv.style.display = "none";
+  showImageFolder.style.display = "none";
+  startButtonDiv.style.display = "none";
+  showCurrentImage.innerHTML = "";
+
   let imagePlace = document.createElement("img");
   let x = 0;
   let timer = durationTimer/1000;
   let timerDiv = document.createElement("div");
-  showImageFolder.appendChild(timerDiv);
-  showImageFolder.appendChild(imagePlace);
+  showCurrentImage.appendChild(timerDiv);
+  showCurrentImage.appendChild(imagePlace);
   imagePlace.setAttribute("src", imgList[x]);
   let imgTimer = setInterval(() => {
 
     timerDiv.innerHTML = (timer - 1).toString();
     timer--;
-    console.log(imgList.length - 1);
     imagePlace.setAttribute("src", imgList[x]);
 
-    if (timer < 0) {
+    if (timer <= 0) {
       x++;
       timer = durationTimer/1000;
       if (x > imgList.length - 1) {
         imagePlace.remove();
         timerDiv.remove();
-        document.getElementById("selectFolderDiv").style.display = "block";
+        selectFolderDiv.style.display = "block";
+        timeSelectionDiv.style.display = "block";
+        showImageFolder.style.display = "block";
+        startButtonDiv.style.display = "block";
         clearInterval(imgTimer);
       }
     }

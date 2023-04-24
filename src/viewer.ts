@@ -2,18 +2,21 @@ import fs from 'fs';
 
 export class viewer {
     files: string[];
-    constructor(paths: string[]) {
+    constructor(paths: string[], extensions: string[]) {
 
         this.files = [];
         for (const path of paths) {
             for (const file of fs.readdirSync(path)) {
-                //console.log(file);
-                this.files.push(path + "\\" + file);
+                for (const extension of extensions) {
+                    if (file.endsWith(extension)) {
+                        this.files.push(path + "\\" + file);
+                    }
+                }
             }
         }
     }
 
-    getFiles() {
+    getFiles(): string[] {
         return this.files;
     }
 }

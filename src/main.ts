@@ -24,10 +24,11 @@ function createWindow(): void {
 function selectFolder(mainWindow: BrowserWindow): void {
   ipcMain.on("select-dirs", async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
-      properties: ["openDirectory"],
+      properties: ["openDirectory", "openFile", "multiSelections"],
+      filters: [{ name: "Images", extensions: ["jpg", "png", "gif", "svg", "webp"] }],
     });
     //console.log('directories selected', result.filePaths);
-    let imageViewer = new viewer(result.filePaths);
+    let imageViewer = new viewer(result.filePaths, ["jpg", "png", "gif", "svg", "webp"]);
     //console.log("getfiles : ", imageViewer.getFiles());
     mainWindow.webContents.send("imagesToDisplay", imageViewer.getFiles());
   });
